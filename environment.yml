@@ -37,6 +37,7 @@ dependencies:
   - matplotlib
   - black
   - open3d
+  - flash-attn==2.7.4.post1 # fit to ubuntu 20.04 with glibc 2.31
   - pip:
     - --find-links https://data.pyg.org/whl/torch-2.5.0+cu121.html
     - torch-cluster
