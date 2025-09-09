@@ -10,6 +10,7 @@ from scipy import stats
 _label_to_color_uint8 = {
     0: [255, 0, 0],  # rebar
     1: [0, 255, 0],  # sleeve
+    2: [0, 0, 255],  # other
 }
 
 _label_to_color = dict([
@@ -20,6 +21,7 @@ _label_to_color = dict([
 _name_to_color_uint8 = {
     "rebar": [255, 0, 0],  # rebar
     "sleeve": [0, 255, 0],  # sleeve
+    "other": [0, 0, 255],  # other
 }
 
 _name_to_color = dict([(name, np.array(color_uint8).astype(np.float64) / 255.0)
@@ -112,7 +114,7 @@ def visualize_scene_by_path(data_path, label_path, save_as_image=False):
     pcd.points = o3d.utility.Vector3dVector(points)
     pcd.colors = o3d.utility.Vector3dVector(pred_label_colors)
     stem, _ = os.path.splitext(label_path)
-    o3d.io.write_point_cloud(f"{stem}.ply", pcd)
+    o3d.io.write_point_cloud(f"exp/pcc/result/ply/{stem}.ply", pcd)
 
     if save_as_image:
         render_to_image(pcd, f"image/{scene_path.stem}_pred.png")
@@ -121,7 +123,7 @@ def visualize_scene_by_path(data_path, label_path, save_as_image=False):
 
 def visualize_scene_by_name(npy_path, save_as_image=False):
     area_name, scene_name = scene_path(npy_path)
-    data_root = Path("data") / "processed_pcc" / f"{area_name}" / f"{scene_name}"
+    data_root = Path("data") / "pcc" / f"{area_name}" / f"{scene_name}"
     visualize_scene_by_path(data_root, npy_path, save_as_image=save_as_image)
 
     
@@ -146,7 +148,10 @@ if __name__ == "__main__":
     # visualize_scene_by_name("office_28")
     # visualize_scene_by_name("office_3")
     # visualize_scene_by_name("hallway_12")
-    visualize_scene_by_name("Area_1-scene_1_pred.npy")
+    visualize_scene_by_name("Floor_4-pcz_9_pred.npy")
+    visualize_scene_by_name("Floor_4-pcz_3_pred.npy")
+    visualize_scene_by_name("Floor_4-pcz_5_pred.npy")
+    visualize_scene_by_name("Floor_4-pcz_6_pred.npy")
 
     # Visualize all scenes
     # data_root = Path("data") / "scannetv2" / "val"

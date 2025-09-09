@@ -53,6 +53,7 @@ def parse_room(
     classes = [
         "rebar",
         "sleeve",
+        "other",
     ]
     class2label = {cls: i for i, cls in enumerate(classes)}
     source_dir = os.path.join(dataset_root, room)
@@ -139,7 +140,7 @@ def main_process():
         "--splits",
         required=True,
         nargs="+",
-        choices=["Area_1", "Area_2"],
+        choices=["Floor_2", "Floor_3", "Floor_4"],
         help="Splits need to process ([Area_1, Area_2, Area_3, Area_4, Area_5, Area_6]).",
     )
     parser.add_argument(

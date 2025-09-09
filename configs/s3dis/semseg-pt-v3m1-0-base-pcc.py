@@ -1,7 +1,7 @@
 _base_ = ["../_base_/default_runtime.py"]
 
 # misc custom setting
-batch_size = 1  # bs: total bs in all gpus
+batch_size = 10  # bs: total bs in all gpus
 num_worker = 24
 mix_prob = 0.8
 empty_cache = False
@@ -10,7 +10,7 @@ enable_amp = True
 # model settings
 model = dict(
     type="DefaultSegmentorV2",
-    num_classes=2,
+    num_classes=3,
     backbone_out_channels=64,
     backbone=dict(
         type="PT-v3m1",
@@ -52,7 +52,8 @@ model = dict(
 )
 
 # scheduler settings
-epoch = 3000
+epoch = 10000
+eval_epoch = 100
 optimizer = dict(type="AdamW", lr=0.006, weight_decay=0.05)
 scheduler = dict(
     type="OneCycleLR",
@@ -66,18 +67,19 @@ param_dicts = [dict(keyword="block", lr=0.0006)]
 
 # dataset settings
 dataset_type = "S3DISDataset"
-data_root = "data/processed_pcc"
+data_root = "data/pcc"
 
 data = dict(
-    num_classes=2,
+    num_classes=3,
     ignore_index=-1,
     names=[
         "rebar",   
         "sleeve",
+        "other",
     ],
     train=dict(
         type=dataset_type,
-        split=("Area_1",),              # ← 加逗号，变成 1 元素元组
+        split=("Floor_2","Floor_3",),              # ← 加逗号，变成 1 元素元组
         data_root=data_root,
         transform=[
             dict(type="CenterShift", apply_z=True),
@@ -107,7 +109,7 @@ data = dict(
     ),
     val=dict(
         type=dataset_type,
-        split=("Area_2",),              # ← 加逗号
+        split=("Floor_4",),              # ← 加逗号
         data_root=data_root,
         transform=[
             dict(type="CenterShift", apply_z=True),
@@ -127,7 +129,7 @@ data = dict(
     ),
     test=dict(
         type=dataset_type,
-        split=("Area_1",),              # ← 加逗号
+        split=("Floor_4",),              # ← 加逗号
         data_root=data_root,
         transform=[
             dict(type="CenterShift", apply_z=True),
@@ -148,7 +150,7 @@ data = dict(
                     feat_keys=("coord","color",),  # ← 加逗号
                 ),
             ],
-            aug_transform = [],
+            aug_transform = [[dict(type="RandomScale", scale=[0.9, 1.1])],],
             # aug_transform=[
             #     [dict(type="RandomScale", scale=[0.9, 0.9])],
             #     [dict(type="RandomScale", scale=[0.95, 0.95])],
